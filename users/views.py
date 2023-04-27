@@ -68,3 +68,14 @@ class ChangePasswordView(UpdateAPIView):
         else:
             response = {'detail': 'password is Incorrect!'}
             return Response(response)
+
+
+class UpdateUserView(UpdateAPIView):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+
+    def get_object(self):
+        # returning the authenticated user
+        if self.request.user.is_authenticated:
+            return self.request.user
+        return AuthenticationFailed('Unauthenticated!')
