@@ -15,6 +15,8 @@ class UserView(RetrieveAPIView):
     serializer_class = UserSerializer
 
     def get_object(self):
+
+        # returning the authenticated user
         if self.request.user.is_authenticated:
             return self.request.user
         return AuthenticationFailed('Unauthenticated!')
