@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 
@@ -33,7 +34,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
         # checking if password and confirm password are the same
         if attrs.get('password') != attrs.get('confirm_password'):
-            raise serializers.ValidationError('password and confirm password does NOT match!')
+            raise serializers.ValidationError(_('password and confirm password does NOT match!'))
 
         return attrs
 
