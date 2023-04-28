@@ -1,10 +1,12 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
+from django.http import HttpRequest
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from users.serializers import UserRegisterSerializer, UserSerializer, ChangePasswordSerializer
+from users.serializers import UserRegisterSerializer, UserSerializer, ChangePasswordSerializer, ResetPasswordSerializer
 
 
 class RegisterView(CreateAPIView):
@@ -12,14 +14,14 @@ class RegisterView(CreateAPIView):
     queryset = User.objects.all()
 
 
-class UserView(RetrieveAPIView):
-    serializer_class = UserSerializer
+class UserView(APIView):
+    def get(self, request: HttpRequest):
+        user = request.user
+        if not user.is_authenticated:
+            raise AuthenticationFailed('unauthenticated!')
 
-    def get_object(self):
-        # returning the authenticated user
-        if self.request.user.is_authenticated:
-            return self.request.user
-        return AuthenticationFailed('Unauthenticated!')
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
 
 
 class ChangePasswordView(UpdateAPIView):
@@ -79,3 +81,18 @@ class UpdateUserView(UpdateAPIView):
         if self.request.user.is_authenticated:
             return self.request.user
         return AuthenticationFailed('Unauthenticated!')
+
+
+class ResetPasswordView(UpdateAPIView):
+    serializer_class = ResetPasswordSerializer
+    queryset = User.objects.all()
+
+    def get_object(self):
+        # returning the authenticated user
+        if self.request.user.is_authenticated:
+            return self.request.user
+        return AuthenticationFailed('Unauthenticated!')
+
+    def verify(self):
+        print('a')
+

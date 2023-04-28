@@ -27,6 +27,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'email', 'password', 'confirm_password')
+        extra_kwargs = {
+            'email': {'required': True}
+        }
 
     def validate(self, attrs):
         # check if password is strong enough
@@ -92,7 +95,7 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         return attrs
 
 
-class RessetPasswordSerializer(serializers.ModelSerializer):
+class ResetPasswordSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only=True,
         required=True,
