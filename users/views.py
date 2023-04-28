@@ -1,11 +1,11 @@
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import User
 from django.http import HttpRequest
 from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView
+from rest_framework.generics import CreateAPIView, UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from users.models import User
 from users.serializers import UserRegisterSerializer, UserSerializer, ChangePasswordSerializer, ResetPasswordSerializer
 
 
