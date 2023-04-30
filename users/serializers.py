@@ -1,4 +1,7 @@
+from random import randint
+
 from django.contrib.auth.password_validation import validate_password
+from django.core.mail import send_mail
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -53,11 +56,19 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         # create user with given data
         user = self.Meta.model.objects.create(**self.clean_validated_data(validated_data))
 
+        # generate an active code for the user and set user activation to False
+        user.email_active_code = randint(100000, 1000000)
+        user.is_active = False
+
         # set password for user
         user.set_password(validated_data.get('password'))
 
         # save user into database
         user.save()
+
+        send_mail = {
+
+        }
 
         return user
 

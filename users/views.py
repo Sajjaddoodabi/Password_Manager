@@ -6,12 +6,18 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from users.models import User
+
 from users.serializers import UserRegisterSerializer, UserSerializer, ChangePasswordSerializer, ResetPasswordSerializer
 
 
 class RegisterView(CreateAPIView):
     serializer_class = UserRegisterSerializer
     queryset = User.objects.all()
+
+
+class ActiveUserView(UpdateAPIView):
+    # todo
+    pass
 
 
 class UserView(APIView):
@@ -93,6 +99,4 @@ class ResetPasswordView(UpdateAPIView):
             return self.request.user
         return AuthenticationFailed('Unauthenticated!')
 
-    def verify(self):
-        print('a')
-
+    # todo
