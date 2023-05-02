@@ -114,3 +114,32 @@ class UpdatePasswordView(APIView):
             return Response(password_ser.data)
 
         return Response(serializer.errors)
+
+
+class DeletePasswordView(APIView):
+    def delete(self, request, id):
+        user = request.user
+
+        password = Passwords.objects.get(id=id)
+        if not password.user == user:
+            response = {'detail': 'You cant have access to others passwords'}
+            return Response(response)
+
+        try:
+            user_password = request.data['user_password']
+        except Exception as e:
+            # returning the error as a string in the response
+            response = {'detail': str(e)}
+            return Response(response)
+
+        # checking user entered password
+        if not user.check_password(user_password):
+            response = {'detail': 'user password invalid!'}
+            return Response(response)
+
+        password.delete()
+
+        response = {'detail': 'password deleted successfully!'}
+        return Response(response)
+
+

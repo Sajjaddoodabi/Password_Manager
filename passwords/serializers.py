@@ -23,4 +23,3 @@ class PasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Passwords
         fields = ('id', 'site_name', 'site_url', 'username', 'email', 'password', 'user_password')
-        read_only_fields = ('id', 'date_created', 'last_date_edited')
