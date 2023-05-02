@@ -120,7 +120,15 @@ class DeletePasswordView(APIView):
     def delete(self, request, id):
         user = request.user
 
+        # getting password from id we git in url
         password = Passwords.objects.get(id=id)
+
+        # checking if it exist
+        if not password:
+            response = {'detail': 'password NOT found!'}
+            return Response(response)
+
+        # checking if its user's password
         if not password.user == user:
             response = {'detail': 'You cant have access to others passwords'}
             return Response(response)
