@@ -2,6 +2,7 @@ from django.contrib.auth.hashers import make_password
 from django.http import HttpRequest
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.generics import CreateAPIView, UpdateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -21,6 +22,8 @@ class ActiveUserView(UpdateAPIView):
 
 
 class UserView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request: HttpRequest):
         user = request.user
         if not user.is_authenticated:
@@ -31,6 +34,7 @@ class UserView(APIView):
 
 
 class ChangePasswordView(UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
     serializer_class = ChangePasswordSerializer
     queryset = User.objects.all()
 
@@ -79,6 +83,7 @@ class ChangePasswordView(UpdateAPIView):
 
 
 class UpdateUserView(UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
@@ -90,6 +95,7 @@ class UpdateUserView(UpdateAPIView):
 
 
 class ResetPasswordView(UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
     serializer_class = ResetPasswordSerializer
     queryset = User.objects.all()
 
