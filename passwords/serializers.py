@@ -23,3 +23,9 @@ class PasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Passwords
         fields = ('id', 'site_name', 'site_url', 'username', 'email', 'password', 'user_password')
+
+
+class PasswordListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Passwords
+        fields = ('id', 'site_name', 'site_url', 'username', 'email')
