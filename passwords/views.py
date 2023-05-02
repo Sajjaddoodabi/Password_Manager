@@ -1,6 +1,6 @@
-from django.shortcuts import render
 from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.generics import CreateAPIView, UpdateAPIView, ListAPIView
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -9,6 +9,8 @@ from .serializers import PasswordSerializer, FullPasswordSerializer, PasswordLis
 
 
 class AddPasswordView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         # checking serializer validation
         serializer = PasswordSerializer(data=request.data)
@@ -61,6 +63,8 @@ class AddPasswordView(APIView):
 
 
 class UpdatePasswordView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def put(self, request, id):
         serializer = PasswordSerializer(request.data)
         if serializer.is_valid():
@@ -117,6 +121,8 @@ class UpdatePasswordView(APIView):
 
 
 class DeletePasswordView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def delete(self, request, pk):
         user = request.user
 
@@ -150,6 +156,7 @@ class DeletePasswordView(APIView):
 
 
 class PasswordListAPIView(ListAPIView):
+    permission_classes = (IsAuthenticated,)
     serializer_class = PasswordListSerializer
     queryset = Passwords.objects.all()
 
@@ -159,6 +166,8 @@ class PasswordListAPIView(ListAPIView):
 
 
 class ShowPasswordView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request, pk):
         user = request.user
 
