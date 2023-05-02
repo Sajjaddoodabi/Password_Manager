@@ -117,20 +117,18 @@ class UpdatePasswordView(APIView):
 
 
 class DeletePasswordView(APIView):
-    def delete(self, request, id):
+    def delete(self, request, pk):
         user = request.user
 
-        # getting password from id we git in url
-        password = Passwords.objects.get(id=id)
+        if user.is_anonymous:
+            raise AuthenticationFailed('unauthenticated!')
 
-        # checking if it exist
+        # getting password from id we get in url
+        password = Passwords.objects.filter(pk=pk, user_id=user.id).first()
+
+        # checking if it exists
         if not password:
             response = {'detail': 'password NOT found!'}
-            return Response(response)
-
-        # checking if its user's password
-        if not password.user == user:
-            response = {'detail': 'You cant have access to others passwords'}
             return Response(response)
 
         try:
@@ -154,3 +152,39 @@ class DeletePasswordView(APIView):
 class PasswordListAPIView(ListAPIView):
     serializer_class = PasswordListSerializer
     queryset = Passwords.objects.all()
+
+    def get_queryset(self):
+        user = self.request.user
+        return Passwords.objects.filter(user_id=user.id)
+
+
+class ShowPasswordView(APIView):
+    def get(self, request, pk):
+        user = request.user
+
+        if user.is_anonymous:
+            raise AuthenticationFailed('unauthenticated!')
+
+        # getting password from id we get in url
+        password = Passwords.objects.get(pk=pk, user_id=user.id)
+
+        # checking if it exists
+        if not password:
+            response = {'detail': 'password NOT found!'}
+            return Response(response)
+
+        try:
+            user_password = request.data['user_password']
+        except Exception as e:
+            # returning the error as a string in the response
+            response = {'detail': str(e)}
+            return Response(response)
+
+        # checking user entered password
+        if not user.check_password(user_password):
+            response = {'detail': 'user password invalid!'}
+            return Response(response)
+
+        serializer = FullPasswordSerializer(password)
+
+        return Response(serializer.data)
