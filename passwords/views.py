@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.generics import CreateAPIView, UpdateAPIView
+from rest_framework.generics import CreateAPIView, UpdateAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Passwords
-from .serializers import PasswordSerializer, FullPasswordSerializer
+from .serializers import PasswordSerializer, FullPasswordSerializer, PasswordListSerializer
 
 
 class AddPasswordView(APIView):
@@ -143,3 +143,6 @@ class DeletePasswordView(APIView):
         return Response(response)
 
 
+class PasswordListAPIView(ListAPIView):
+    serializer_class = PasswordListSerializer
+    queryset = Passwords.objects.all()
